@@ -41,8 +41,8 @@ public class ProxyTest {
 		// do2();
 		// do3();
 		// do4();
-		// do5();
-		do6();
+		 do5();
+		// do6();
 	}
 
 	/**

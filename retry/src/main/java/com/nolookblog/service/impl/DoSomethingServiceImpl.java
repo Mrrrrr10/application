@@ -12,6 +12,8 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -49,11 +51,12 @@ public class DoSomethingServiceImpl implements DoSomethingService {
 	 * 			 3、返回值类型必须和 @Retryable 修饰的方法一致
 	 *
 	 */
-	@Retryable(maxAttempts = 2)
+//	@Retryable(maxAttempts = 2)
+	@Retryable(maxAttempts = 10, backoff = @Backoff(delay = 2000L, multiplier = 2, maxDelay = 11000L))
 	@Override
 	public void doSomething() {
 		long doSomethingTimes = times.incrementAndGet();
-		if (doSomethingTimes % 3 != 0){
+		if (doSomethingTimes % 10 != 0){
 			log.warn("发生异常, 第{}次, 时间:{}", doSomethingTimes, LocalDateTime.now());
 
 			throw new RetryException("达到最大重试次数");
@@ -66,5 +69,17 @@ public class DoSomethingServiceImpl implements DoSomethingService {
 		log.error("达到最大重试次数，记录日志：{}", e.getMessage());
 	}
 
+	public static void main(String[] args) {
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+
+		System.out.println(cal.getTime());
+
+
+	}
 
 }
